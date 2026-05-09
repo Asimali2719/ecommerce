@@ -8,22 +8,23 @@ import Link from 'next/link'
 import { formatPrice } from '@/lib/utils'
 import { CheckCircle2, Package, Truck, MapPin, CreditCard } from 'lucide-react'
 
-interface PageProps { params: { id: string }; searchParams: { success?: string } }
+interface PageProps { params: Promise<{ id: string }>; searchParams: Promise<{ success?: string }> }
 
 const STATUS_STEPS = ['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED']
 
 export default async function OrderDetailPage({ params, searchParams }: PageProps) {
-  const session = await auth()
+  const { id } = await params
+  const { success } = await searchParams
   if (!session) redirect('/login')
 
   const order = await db.order.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     include: { items: true, shippingAddress: true },
   })
 
   if (!order || order.userId !== session.user.id) notFound()
 
-  const isSuccess = searchParams.success === 'true'
+  const isSuccess = success === 'true'
   const currentStep = STATUS_STEPS.indexOf(order.status)
 
   return (

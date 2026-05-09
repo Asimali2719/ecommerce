@@ -7,12 +7,13 @@ import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 
 interface PageProps {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params
   const product = await db.product.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
   })
   if (!product) return { title: 'Product Not Found' }
   return {
@@ -27,10 +28,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ProductPage({ params }: PageProps) {
+  const { slug } = await params
   const product = await db.product.findUnique({
-    where: { slug: params.slug, published: true },
-    include: { category: true },
-  })
+    where: { slug, published: true },
 
   if (!product) notFound()
 
