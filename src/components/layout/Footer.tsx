@@ -63,7 +63,7 @@ export function Footer() {
           ))}
         </div>
         <div className="border-t border-stone-800 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm">© {new Date().getFullYear()} Luxe Shop. All rights reserved.</p>
+          <p className="text-sm">© {new Date().getFullYear()}Luxe Shop. All rights reserved.</p>
           <p className="text-sm">Built with Next.js, Prisma & Stripe</p>
         </div>
       </div>
